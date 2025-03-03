@@ -9,7 +9,7 @@ const router = createBrowserRouter([
         element: <App />,
         errorElement: <ErrorPage />,
         children: [
-            { index: true, element: <FurnitureDisplay /> },
+            { index: true, element: <FurnitureDisplay /> }, 
         ]
     }
 ]);
