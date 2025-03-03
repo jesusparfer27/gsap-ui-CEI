@@ -3,7 +3,7 @@ import App from '../App';
 import { ErrorPage } from "../pages/ErrorPage";
 import FurnitureDisplay from "../pages/FurnitureDisplay";
 
-const router = createBrowserRouter([
+const router = createBrowserRouter([ 
     {
         path: '/', 
         element: <App />,
