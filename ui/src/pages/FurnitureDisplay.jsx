@@ -5,6 +5,8 @@ const FurnitureDisplay = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const VITE_API_BACKEND = import.meta.env.VITE_API_BACKEND;
+  const VITE_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
+
 
   useEffect(() => {
     const fetchFurnitures = async () => {
@@ -34,7 +36,7 @@ const FurnitureDisplay = () => {
         {furnitures.map((furniture) => (
           <div key={furniture._id} className="bg-white rounded-lg shadow-lg p-4">
             <img
-              src={`${VITE_API_BACKEND}${furniture.imagen}`}
+              src={`${VITE_IMAGE_URL}${furniture.imagen}`}
               alt={furniture.nombre}
               className="w-full h-48 object-cover rounded-md"
             />
