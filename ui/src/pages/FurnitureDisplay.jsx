@@ -36,7 +36,7 @@ const FurnitureDisplay = () => {
         {furnitures.map((furniture) => (
           <div key={furniture._id} className="bg-white rounded-lg shadow-lg p-4">
             <img
-              src={`${VITE_IMAGE_URL}${furniture.imagen}`}
+              src={`http://localhost:3000/public${furniture.imagen}`}
               alt={furniture.nombre}
               className="w-full h-48 object-cover rounded-md"
             />
