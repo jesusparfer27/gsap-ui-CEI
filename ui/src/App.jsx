@@ -1,13 +1,17 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Outlet } from "react-router-dom";
+import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
 
 const App = () => {
 
 
   return (
-    <main className="w-32 h-32 bg-blue-500 text-white flex items-center justify-center">
+    <main className="w-full h-screen bg-white-500 items-center justify-center">
+      <Header />
       <Outlet/>
+      <Footer/>
     </main>
   );
 };
