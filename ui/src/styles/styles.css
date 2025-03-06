@@ -1,0 +1,17 @@
+.height_container {
+    /* height: 60vh; */
+}
+
+/* Para tabletas */
+@media (max-width: 768px) {
+    .height_container {
+        height: 0vh; /* Reducir el tamaño para tabletas */
+    }
+}
+
+/* Para dispositivos móviles */
+@media (max-width: 480px) {
+    .height_container {
+        height: 50vh; /* Reducir aún más para dispositivos móviles */
+    }
+}

@@ -8,7 +8,7 @@ const App = () => {
 
 
   return (
-    <main className="w-full h-screen bg-white-500 items-center justify-center">
+    <main className="w-full bg-white-500 items-center justify-center">
       <Header />
       <Outlet/>
       <Footer/>

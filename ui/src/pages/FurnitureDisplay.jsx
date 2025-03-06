@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
+import '../styles/styles.css'
 
 const FurnitureDisplay = () => {
   const [furnitures, setFurnitures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false); // Nueva bandera para controlar animaciones
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const furnitureContainerRef = useRef(null);
   const buttonRef = useRef(null);
@@ -35,66 +36,78 @@ const FurnitureDisplay = () => {
   }, []);
 
   const handleToggleFurniture = () => {
-    if (!furnitureContainerRef.current || isAnimating) return; 
+    if (!furnitureContainerRef.current || isAnimating) return;
     setIsAnimating(true);
-  
+
     const tl = gsap.timeline({
       onComplete: () => setIsAnimating(false),
     });
-  
-    tl.to(
-      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current, imageRef.current],
-      {
-        y: -50,
-        opacity: 0,
-        filter: "blur(10px)",
-        duration: 0.7, // 🔹 Aumentamos duración para hacerla más lenta
-        ease: "power2.inOut",
-      }
-    ).add(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % furnitures.length);
-    });
+
+    tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: -50, // 🔹 Movimiento más lento
+      opacity: 0,
+      filter: "blur(10px)",
+      duration: 0.7,
+      ease: "power2.inOut",
+    })
+      .to(
+        imageRef.current,
+        {
+          y: -100, // 🔹 Se mueve el doble en Y
+          opacity: 0,
+          duration: 0.7,
+          ease: "power2.inOut",
+        },
+        "-=0.5" // 🔹 Se superpone con la animación del texto
+      )
+      .add(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % furnitures.length);
+      });
   };
-  
+
   useEffect(() => {
     if (!furnitures.length) return;
-  
-    gsap.set(
-      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current, imageRef.current],
-      {
-        y: 50,
-        opacity: 0,
-        filter: "blur(10px)",
-      }
-    );
-  
-    gsap.to(
-      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current, imageRef.current],
-      {
-        y: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        duration: 1, // 🔹 Animación de entrada más suave
-        ease: "power2.out",
-      }
-    );
+
+    gsap.set([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: 50,
+      opacity: 0,
+      filter: "blur(10px)",
+    });
+
+    gsap.set(imageRef.current, {
+      y: 100, // 🔹 Inicia más abajo para la nueva animación
+      opacity: 0,
+    });
+
+    gsap.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      duration: 1,
+      ease: "power2.out",
+    });
+
+    gsap.to(imageRef.current, {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      duration: 1,
+      ease: "power2.out",
+    });
   }, [currentIndex]);
-  
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {loading && <p className="text-center text-gray-500">Cargando muebles...</p>}
-      {error && <p className="text-center text-red-500">Error: {error}</p>}
+    <div className="w-full flex justify-center items-center"> {/* Usa h-screen o un valor fijo */}
+  {loading && <p className="text-center text-gray-500">Cargando muebles...</p>}
+  {error && <p className="text-center text-red-500">Error: {error}</p>}
 
-      <div className="flex justify-center">
-        {furnitures.length > 0 && (
-          <div
-            ref={furnitureContainerRef}
-            key={furnitures[currentIndex]._id}
-            className="bg-white p-6 flex flex-col gap-6 items-center transition-all"
-          >
-            <div className="flex">
-              <div className="w-full md:w-1/2">
+    {furnitures.length > 0 && (
+      <div
+        ref={furnitureContainerRef}
+        key={furnitures[currentIndex]._id}
+      >
+        <div className="flex w-full height_container">
+              <div className="w-full md:w-1/2 flex flex-col justify-center">
                 <p ref={textDesignerRef} className="text-gray-500 text-sm mt-2">
                   Diseñado por: <strong>{furnitures[currentIndex].diseñador}</strong>
                 </p>
@@ -109,14 +122,14 @@ const FurnitureDisplay = () => {
                     <button
                       onClick={handleToggleFurniture}
                       className="text-white px-4 py-2 border-2 bg-black border-black"
-                      disabled={isAnimating} // Evitar spam de clics
+                      disabled={isAnimating}
                     >
                       Cambiar Mueble
                     </button>
                   </div>
                 )}
               </div>
-              <div className="w-full md:w-1/2">
+              <div className="w-full md:w-1/2 flex justify-center items-center">
                 <img
                   ref={imageRef}
                   src={`${VITE_IMAGE_URL}${furnitures[currentIndex].imagen}`}
@@ -128,8 +141,8 @@ const FurnitureDisplay = () => {
           </div>
         )}
       </div>
-    </div>
   );
+  
 };
 
 export default FurnitureDisplay;
