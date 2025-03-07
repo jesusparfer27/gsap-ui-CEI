@@ -40,55 +40,52 @@ const FurnitureDisplay = () => {
   const handleToggleFurniture = () => {
     if (!furnitureContainerRef.current || isAnimating) return;
     setIsAnimating(true);
-
+  
     const tl = gsap.timeline({
       onComplete: () => setIsAnimating(false),
     });
-
+  
     tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
-      y: -50, // 🔹 Movimiento más lento
+      y: -50, 
       opacity: 0,
-      filter: "blur(10px)",
-      duration: 0.7,
+      duration: 1.4,
       ease: "power2.inOut",
     })
       .to(
         imageRef.current,
         {
-          y: -100, // 🔹 Se mueve el doble en Y
+          y: -300,
           opacity: 0,
-          duration: 0.7,
+          duration: 1,
           ease: "power2.inOut",
         },
-        "-=0.5" // 🔹 Se superpone con la animación del texto
+        "-=1.1"
       )
       .add(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % furnitures.length);
       });
   };
-
+  
   useEffect(() => {
     if (!furnitures.length) return;
-
+  
     gsap.set([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
       y: 50,
       opacity: 0,
-      filter: "blur(10px)",
     });
-
+  
     gsap.set(imageRef.current, {
-      y: 100, // 🔹 Inicia más abajo para la nueva animación
+      y: 400,
       opacity: 0,
     });
-
+  
     gsap.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
       y: 0,
       opacity: 1,
-      filter: "blur(0px)",
       duration: 1,
       ease: "power2.out",
     });
-
+  
     gsap.to(imageRef.current, {
       y: 0,
       opacity: 1,
@@ -97,6 +94,7 @@ const FurnitureDisplay = () => {
       ease: "power2.out",
     });
   }, [currentIndex]);
+  
 
   return (
     <div className="w-full flex justify-center items-center"> {/* Usa h-screen o un valor fijo */}
