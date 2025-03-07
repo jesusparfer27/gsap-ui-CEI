@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import '../styles/styles.css'
+import { useFurniture } from "../context/FurnitureContext"; // Importamos el contexto
+
 
 const FurnitureDisplay = () => {
   const [furnitures, setFurnitures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const { currentIndex, setCurrentIndex } = useFurniture(); // 🔹 Usamos el contexto
   const [isAnimating, setIsAnimating] = useState(false);
 
   const furnitureContainerRef = useRef(null);
