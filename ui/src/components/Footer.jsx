@@ -46,29 +46,29 @@ export const Footer = () => {
   };
 
   return (
-    <div className="absolute bottom-0 w-full p-8" ref={containerRef}>
-      <div className="absolute top-0 left-0 w-full h-[3px] bg-gray-200"></div>
-      <div ref={lineRef} className="absolute top-0 left-0 h-[3px] bg-gray-600" style={{ width: 0 }}></div>
-  
-      <div className="flex pl-4">
-        <div className="flex justify-center gap-8 pl-4">
-          {furniture.map((item, index) => (
-            <div
-              key={item._id}
-              className="w-[20vw] min-w-[15%] max-w-[40%] p-4 bg-white cursor-pointer transition-all"
-              onMouseEnter={moveLine}
-              onMouseLeave={resetLine}
-              onClick={() => setCurrentIndex(index)} // 🔹 Actualizamos el contexto al hacer clic
-            >
-              <p>{(index + 1).toString().padStart(2, "0")}</p>
-              <h3 className="text-l font-semibold">{item.nombre}</h3>
-            </div>
-          ))}
-        </div>
+  <div className="absolute bottom-0 w-full p-8" ref={containerRef}>
+    <div className="absolute top-0 left-0 w-full h-[3px] bg-gray-200"></div>
+    <div ref={lineRef} className="absolute top-0 left-0 h-[3px] bg-gray-600" style={{ width: 0 }}></div>
+
+    <div className="flex pl-4">
+      <div className="flex justify-center gap-8 pl-4">
+        {furniture.map((item, index) => (
+          <div
+            key={item._id}
+            className="w-[20vw] min-w-[15%] max-w-[40%] p-4 bg-white cursor-pointer transition-all"
+            onMouseEnter={moveLine}
+            onMouseLeave={resetLine}
+            onClick={() => setCurrentIndex(index)} // 🔹 Actualizamos el contexto al hacer clic
+          >
+            <p>{(index + 1).toString().padStart(2, "0")}</p>
+            <h3 className="text-l font-semibold">{item.nombre}</h3>
+          </div>
+        ))}
       </div>
     </div>
-  );
-  
+  </div>
+);
+
 };
 
 export default Footer;
