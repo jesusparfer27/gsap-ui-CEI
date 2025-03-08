@@ -90,6 +90,7 @@ export const FurnitureProvider = ({ children }) => {
         );
     }
   };
+  
 
   useEffect(() => {
     if (!furnitures.length || isAnimating) return;
@@ -147,7 +148,7 @@ export const FurnitureProvider = ({ children }) => {
         textNameRef,
         textDesignerRef,
         textDescriptionRef,
-        imageRef
+        imageRef,
       }}
     >
       {children}
