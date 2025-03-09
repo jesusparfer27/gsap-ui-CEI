@@ -16,10 +16,9 @@ export const FurnitureProvider = ({ children }) => {
   const textDescriptionRef = useRef(null);
   const imageRef = useRef(null);
 
-  const prevIndexRef = useRef(currentIndex); // Guarda el índice anterior
+  const prevIndexRef = useRef(currentIndex);
 
   const VITE_API_BACKEND = import.meta.env.VITE_API_BACKEND;
-  const VITE_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
   useEffect(() => {
     const fetchFurnitures = async () => {
@@ -39,88 +38,71 @@ export const FurnitureProvider = ({ children }) => {
 
   const handleToggleFurniture = (direction = 1) => {
     if (isAnimating || furnitures.length === 0) return;
-  
+
     setIsAnimating(true);
-  
+
     const newIndex = (currentIndex + direction + furnitures.length) % furnitures.length;
-  
+    const goingBackwards = direction === -1;
+
     const tl = gsap.timeline({
       onComplete: () => {
         setCurrentIndex(newIndex);
-        setIsAnimating(false); // Asegúrate de setear esto solo al finalizar la animación
+        prevIndexRef.current = newIndex;
+        setIsAnimating(false);
       },
     });
-  
-    // Definir animación dependiendo de la dirección
-    if (direction === 1) {
-      // 🔹 Animación hacia adelante
-      tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
-        y: -50,
+
+    const yOffsetText = goingBackwards ? 50 : -50;
+    const yOffsetImage = goingBackwards ? 300 : -300;
+
+    tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: yOffsetText,
+      opacity: 0,
+      duration: 1.4,
+      ease: "power2.inOut",
+    }).to(
+      imageRef.current,
+      {
+        y: yOffsetImage,
         opacity: 0,
-        duration: 1.4,
+        duration: 1,
         ease: "power2.inOut",
-      })
-        .to(
-          imageRef.current,
-          {
-            y: -300,
-            opacity: 0,
-            duration: 1,
-            ease: "power2.inOut",
-          },
-          "-=1.1"
-        );
-    } else {
-      // 🔹 Animación en reversa
-      tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
-        y: 50,
-        opacity: 0,
-        duration: 1.4,
-        ease: "power2.inOut",
-      })
-        .to(
-          imageRef.current,
-          {
-            y: 300,
-            opacity: 0,
-            duration: 1,
-            ease: "power2.inOut",
-          },
-          "-=1.1"
-        );
-    }
+      },
+      "-=1.1"
+    );
   };
-  
 
   useEffect(() => {
     if (!furnitures.length || isAnimating) return;
-
+  
     setIsAnimating(true);
-
+  
     const tl = gsap.timeline({
       onComplete: () => setIsAnimating(false),
     });
-
-    // Restaurar desde diferentes posiciones según la dirección del cambio
+  
     const wasReversed = prevIndexRef.current > currentIndex;
-
+  
+    // Solo establecemos los valores iniciales una vez, al iniciar el efecto
     gsap.set([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
       y: wasReversed ? -50 : 50,
       opacity: 0,
     });
-
+  
     gsap.set(imageRef.current, {
       y: wasReversed ? -300 : 300,
       opacity: 0,
     });
-
+  
+    // Animación de aparición del texto solo si no está visible
     tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
       y: 0,
       opacity: 1,
       duration: 1,
       ease: "power2.out",
     });
-
+  
+    // Animación de la imagen
     tl.to(imageRef.current, {
       y: 0,
       opacity: 1,
@@ -128,10 +110,44 @@ export const FurnitureProvider = ({ children }) => {
       duration: 1,
       ease: "power2.out",
     });
-
-    prevIndexRef.current = currentIndex; // Guardamos el índice actual como el anterior
+  
+    // Si el índice es 0, hacer que la imagen se desplace desde el top
+    if (currentIndex === 0) {
+      tl.fromTo(
+        imageRef.current,
+        {
+          y: -300, // Desplazamiento inicial desde -300
+        },
+        {
+          y: 0, // Animación a 0
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "-=1"
+      );
+  
+      // Animación del texto para el índice 0
+      tl.fromTo(
+        [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+        {
+          y: -50, // Desplazamiento inicial desde -50
+        },
+        {
+          y: 0, // Animación a 0
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "-=1" // Sincronizamos las animaciones
+      );
+    }
+  
+    // Actualizar el índice anterior
+    prevIndexRef.current = currentIndex;
   }, [currentIndex]);
   
+
   return (
     <FurnitureContext.Provider
       value={{
