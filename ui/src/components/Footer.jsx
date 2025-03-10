@@ -63,7 +63,7 @@ export const Footer = () => {
     tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
       y: outY,
       opacity: 0,
-      duration: 0.5,
+      duration: 1,
       ease: "power2.inOut",
     })
       .to(
@@ -71,10 +71,10 @@ export const Footer = () => {
         {
           y: outY * 6,
           opacity: 0,
-          duration: 0.5,
+          duration: 1.2,
           ease: "power2.inOut",
         },
-        "-=0.4"
+        "-=0.6"
       )
       .add(() => {
         setCurrentIndex(index);
