@@ -38,12 +38,12 @@ export const FurnitureProvider = ({ children }) => {
 
   const handleToggleFurniture = (direction = 1) => {
     if (isAnimating || furnitures.length === 0) return;
-
+  
     setIsAnimating(true);
-
+  
     const newIndex = (currentIndex + direction + furnitures.length) % furnitures.length;
     const goingBackwards = direction === -1;
-
+  
     const tl = gsap.timeline({
       onComplete: () => {
         setCurrentIndex(newIndex);
@@ -51,14 +51,14 @@ export const FurnitureProvider = ({ children }) => {
         setIsAnimating(false);
       },
     });
-
+  
     const yOffsetText = goingBackwards ? 50 : -50;
     const yOffsetImage = goingBackwards ? 300 : -300;
-
+  
     tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
       y: yOffsetText,
       opacity: 0,
-      duration: 1.4,
+      duration: 1,
       ease: "power2.inOut",
     }).to(
       imageRef.current,
@@ -70,82 +70,66 @@ export const FurnitureProvider = ({ children }) => {
       },
       "-=1.1"
     );
+  
+    // Asegurar que la animación no se repite dos veces al regresar a 0
+    if (newIndex === 0 && prevIndexRef.current === furnitures.length - 1) {
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 1000);
+    }
   };
+  
 
   useEffect(() => {
-    if (!furnitures.length || isAnimating) return;
+    if (!furnitures.length || isAnimating || prevIndexRef.current === currentIndex) return;
   
     setIsAnimating(true);
   
     const tl = gsap.timeline({
-      onComplete: () => setIsAnimating(false),
+      onComplete: () => {
+        setIsAnimating(false);
+        prevIndexRef.current = currentIndex; // Asegurarnos de que el índice anterior se actualiza correctamente
+      },
     });
   
     const wasReversed = prevIndexRef.current > currentIndex;
+    const yOffsetText = wasReversed ? -50 : 50;
+    const yOffsetImage = wasReversed ? -300 : 300;
   
-    // Solo establecemos los valores iniciales una vez, al iniciar el efecto
-    gsap.set([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
-      y: wasReversed ? -50 : 50,
-      opacity: 0,
-    });
+    gsap.set(
+      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+      {
+        y: yOffsetText,
+        opacity: 0,
+      }
+    );
   
     gsap.set(imageRef.current, {
-      y: wasReversed ? -300 : 300,
+      y: yOffsetImage,
       opacity: 0,
     });
   
-    // Animación de aparición del texto solo si no está visible
-    tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "power2.out",
-    });
+    tl.to(
+      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power2.out",
+      }
+    ).to(
+      imageRef.current,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power2.out",
+      },
+      "-=0.5"
+    );
   
-    // Animación de la imagen
-    tl.to(imageRef.current, {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      duration: 1,
-      ease: "power2.out",
-    });
-  
-    // Si el índice es 0, hacer que la imagen se desplace desde el top
-    if (currentIndex === 0) {
-      tl.fromTo(
-        imageRef.current,
-        {
-          y: -300, // Desplazamiento inicial desde -300
-        },
-        {
-          y: 0, // Animación a 0
-          opacity: 1,
-          duration: 1,
-          ease: "power2.out",
-        },
-        "-=1"
-      );
-  
-      // Animación del texto para el índice 0
-      tl.fromTo(
-        [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
-        {
-          y: -50, // Desplazamiento inicial desde -50
-        },
-        {
-          y: 0, // Animación a 0
-          opacity: 1,
-          duration: 1,
-          ease: "power2.out",
-        },
-        "-=1" // Sincronizamos las animaciones
-      );
-    }
-  
-    // Actualizar el índice anterior
-    prevIndexRef.current = currentIndex;
   }, [currentIndex]);
+  
   
 
   return (

@@ -1,9 +1,26 @@
-import React from 'react'
+import React, { createContext, useContext, useState } from 'react';
 
-const SliderContext = () => {
+// Crear el contexto
+const SliderContext = createContext();
+
+// Proveedor del contexto
+export const SliderProvider = ({ children }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Función para alternar la visibilidad del Slider
+  const toggleSlider = () => {
+    console.log('Toggling slider visibility'); // Agrega esto para depurar
+    setIsVisible((prev) => !prev);
+  };
+  
   return (
-    <div>SliderContext</div>
-  )
-}
+    <SliderContext.Provider value={{ isVisible, toggleSlider }}>
+      {children}
+    </SliderContext.Provider>
+  );
+};
 
-export default SliderContext
+// Hook para consumir el contexto
+export const useSliderContext = () => {
+  return useContext(SliderContext);
+};

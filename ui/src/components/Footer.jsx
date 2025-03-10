@@ -15,6 +15,7 @@ export const Footer = () => {
     isAnimating,
     setIsAnimating,
     currentIndex,
+    prevIndexRef,
   } = useFurniture();
 
   const [activeIndex, setActiveIndex] = useState(currentIndex);
@@ -22,6 +23,7 @@ export const Footer = () => {
   // Sincronizar activeIndex con currentIndex del contexto
   useEffect(() => {
     setActiveIndex(currentIndex);
+    moveLineToIndex(currentIndex);
   }, [currentIndex]);
 
   const moveLine = (e) => {
@@ -39,12 +41,26 @@ export const Footer = () => {
     }
   };
 
+  const moveLineToIndex = (index) => {
+    if (lineRef.current && containerRef.current) {
+      const items = containerRef.current.querySelectorAll(".footer-item");
+      if (items[index]) {
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const itemRect = items[index].getBoundingClientRect();
+        const offsetX = itemRect.left - containerRect.left;
+
+        gsap.to(lineRef.current, {
+          x: offsetX,
+          width: itemRect.width,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+    }
+  };
+
   const resetLine = () => {
-    gsap.to(lineRef.current, {
-      width: 0,
-      duration: 0.3,
-      ease: "power2.out",
-    });
+    moveLineToIndex(activeIndex);
   };
 
   const handleFooterClick = (index) => {
@@ -53,25 +69,32 @@ export const Footer = () => {
     setIsAnimating(true);
 
     const tl = gsap.timeline({
-      onComplete: () => setIsAnimating(false),
+      onComplete: () => {
+        setCurrentIndex(index);
+        prevIndexRef.current = index;
+        setIsAnimating(false);
+      },
     });
 
     const isForward = index > currentIndex;
     const outY = isForward ? -50 : 50;
     const inY = isForward ? 50 : -50;
 
-    tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
-      y: outY,
-      opacity: 0,
-      duration: 1,
-      ease: "power2.inOut",
-    })
+    tl.to(
+      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+      {
+        y: outY,
+        opacity: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      }
+    )
       .to(
         imageRef.current,
         {
-          y: outY * 6,
+          y: outY * 8,
           opacity: 0,
-          duration: 1.2,
+          duration: 1,
           ease: "power2.inOut",
         },
         "-=0.6"
@@ -82,7 +105,71 @@ export const Footer = () => {
   };
 
   useEffect(() => {
-    console.log("Índice actual en contexto:", currentIndex);
+    if (!furnitures.length || isAnimating) return;
+
+    setIsAnimating(true);
+
+    const tl = gsap.timeline({
+      onComplete: () => setIsAnimating(false),
+    });
+
+    const wasReversed = prevIndexRef.current > currentIndex;
+
+    gsap.set([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: wasReversed ? -50 : 50,
+      opacity: 0,
+    });
+
+    gsap.set(imageRef.current, {
+      y: wasReversed ? -300 : 300,
+      opacity: 0,
+    });
+
+    tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out",
+    });
+
+    tl.to(imageRef.current, {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      duration: 1,
+      ease: "power2.out",
+    });
+
+    if (currentIndex === 0) {
+      tl.fromTo(
+        imageRef.current,
+        {
+          y: -300,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "-=1"
+      );
+
+      tl.fromTo(
+        [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+        {
+          y: -50,
+        },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "-=1"
+      );
+    }
+    prevIndexRef.current = currentIndex;
   }, [currentIndex]);
 
   return (
@@ -95,19 +182,13 @@ export const Footer = () => {
           {furnitures.map((item, index) => (
             <div
               key={item._id}
-              className="w-[20vw] min-w-[15%] max-w-[40%] p-4 bg-white cursor-pointer transition-all"
+              className="footer-item w-[20vw] min-w-[15%] max-w-[40%] p-4 bg-white cursor-pointer transition-all"
               onMouseEnter={moveLine}
               onMouseLeave={resetLine}
               onClick={() => handleFooterClick(index)}
             >
-              <p
-                className="text-gray-500 font-bold"
-              >
-                {(index + 1).toString().padStart(2, "0")}
-              </p>
-              <h3
-                className={`text-l transition-all font-bold ${activeIndex === index ? 'text-black' : 'text-gray-500'}`}
-              >
+              <p className="text-gray-500 font-bold">{(index + 1).toString().padStart(2, "0")}</p>
+              <h3 className={`text-l transition-all font-bold ${activeIndex === index ? "text-black" : "text-gray-500"}`}>
                 {item.nombre}
               </h3>
             </div>
