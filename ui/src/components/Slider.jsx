@@ -1,21 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { useSliderContext } from '../context/SliderContext';
 
 const Slider = () => {
   const { isVisible } = useSliderContext();
+  const sliderRef = useRef(null);
 
   useEffect(() => {
-    const slider = document.querySelector('.slider-container');
     if (isVisible) {
-      gsap.to(slider, {
-        x: 0, // Desliza el contenedor desde la izquierda
+      gsap.to(sliderRef.current, {
+        x: 0,
         duration: 2,
         ease: 'power3.inOut',
       });
     } else {
-      gsap.to(slider, {
-        x: '-100%', // Desliza fuera de la pantalla
+      gsap.to(sliderRef.current, {
+        x: '100%',
         duration: 2,
         ease: 'power3.inOut',
       });
@@ -24,10 +24,17 @@ const Slider = () => {
 
   return (
     <div
-      className={`slider-container fixed top-0 left-0 w-full h-screen bg-black ${isVisible ? 'block' : 'hidden'}`}
-      style={{ zIndex: 9999 }} // Asegúrate de que el slider tenga un z-index alto
+      ref={sliderRef}
+      className="top-0 right-0 h-screen bg-black absolute"
+      style={{
+        width: '100vw',
+        height: '100vh',
+        transform: isVisible ? 'translateX(0)' : 'translateX(100%)',
+        zIndex: 1000, // Se mantiene debajo del Header
+      }}
     />
   );
 };
+
 
 export default Slider;
