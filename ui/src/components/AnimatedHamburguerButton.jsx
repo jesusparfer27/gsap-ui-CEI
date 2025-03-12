@@ -1,19 +1,13 @@
 import React, { useState } from "react";
 import { MotionConfig, motion } from "framer-motion";
-import { useSliderContext } from "../context/SliderContext"; // Importa el contexto
 
 export const AnimatedHamburgerButton = ({ onClick }) => {
   const [active, setActive] = useState(false);
-  const { isVisible } = useSliderContext(); // Obtiene el estado del slider
 
   const handleClick = () => {
     setActive((prev) => !prev); // Cambia el estado interno de animación
     onClick(); // Llama a toggleSlider del contexto
   };
-
-  // Cambia el color de los elementos según el estado del slider
-  const color = isVisible ? "white" : "black";
-  const borderColor = isVisible ? "border-white" : "border-black";
 
   return (
     <MotionConfig
@@ -26,23 +20,30 @@ export const AnimatedHamburgerButton = ({ onClick }) => {
         initial={false}
         animate={active ? "open" : "closed"}
         onClick={handleClick}
-        className={`relative h-12 w-12 border-2 ${borderColor} bg-transparent transition-colors`}
+        className={`relative h-12 w-12 border-2 border-black transition-colors ${
+          active ? "bg-white" : "bg-black/0"
+        }`} // Cambia el fondo según el estado
       >
         <motion.span
           variants={VARIANTS.top}
-          className="absolute h-0.5 w-8"
-          style={{ backgroundColor: color, y: "-50%", left: "50%", x: "-50%", top: "30%" }}
+          className={`absolute h-0.5 w-8 ${
+            active ? "bg-black" : "bg-white" // Cambia el color de las barras según el estado
+          }`}
+          style={{ y: "-50%", left: "50%", x: "-50%", top: "30%" }}
         />
         <motion.span
           variants={VARIANTS.middle}
-          className="absolute h-0.5 w-8"
-          style={{ backgroundColor: color, left: "50%", x: "-50%", top: "50%", y: "-50%" }}
+          className={`absolute h-0.5 w-8 ${
+            active ? "bg-black" : "bg-white"
+          }`}
+          style={{ left: "50%", x: "-50%", top: "50%", y: "-50%" }}
         />
         <motion.span
           variants={VARIANTS.bottom}
-          className="absolute h-0.5 w-4"
+          className={`absolute h-0.5 w-4 ${
+            active ? "bg-black" : "bg-white"
+          }`}
           style={{
-            backgroundColor: color,
             x: "-50%",
             y: "50%",
             bottom: "30%",

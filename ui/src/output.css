@@ -554,6 +554,14 @@ video {
   display: none;
 }
 
+.visible {
+  visibility: visible;
+}
+
+.fixed {
+  position: fixed;
+}
+
 .absolute {
   position: absolute;
 }
@@ -574,12 +582,28 @@ video {
   top: 0px;
 }
 
+.z-\[8888\] {
+  z-index: 8888;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .mb-3\.5 {
   margin-bottom: 0.875rem;
 }
 
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
 }
 
 .mt-2 {
@@ -592,14 +616,6 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
 }
 
 .flex {
@@ -618,44 +634,16 @@ video {
   height: 3px;
 }
 
-.h-\[40vh\] {
-  height: 40vh;
-}
-
-.h-screen {
-  height: 100vh;
+.h-\[70vh\] {
+  height: 70vh;
 }
 
 .h-full {
   height: 100%;
 }
 
-.h-\[140vh\] {
-  height: 140vh;
-}
-
-.h-\[100vh\] {
+.h-screen {
   height: 100vh;
-}
-
-.h-\[80vh\] {
-  height: 80vh;
-}
-
-.h-\[90vh\] {
-  height: 90vh;
-}
-
-.h-\[70vh\] {
-  height: 70vh;
-}
-
-.h-\[50vh\] {
-  height: 50vh;
-}
-
-.h-\[45vh\] {
-  height: 45vh;
 }
 
 .min-h-\[50vh\] {
@@ -686,8 +674,8 @@ video {
   width: 100%;
 }
 
-.w-1\/2 {
-  width: 50%;
+.w-screen {
+  width: 100vw;
 }
 
 .min-w-\[15\%\] {
@@ -696,10 +684,6 @@ video {
 
 .max-w-\[40\%\] {
   max-width: 40%;
-}
-
-.max-w-\[40vh\] {
-  max-width: 40vh;
 }
 
 .max-w-\[50vh\] {
@@ -734,24 +718,22 @@ video {
   gap: 1rem;
 }
 
+.gap-52 {
+  gap: 13rem;
+}
+
 .gap-8 {
   gap: 2rem;
 }
 
-.gap-16 {
-  gap: 4rem;
+.space-y-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 
-.gap-24 {
-  gap: 6rem;
-}
-
-.gap-32 {
-  gap: 8rem;
-}
-
-.gap-52 {
-  gap: 13rem;
+.overflow-hidden {
+  overflow: hidden;
 }
 
 .rounded-md {
@@ -818,10 +800,6 @@ video {
   padding-left: 1rem;
 }
 
-.pt-2 {
-  padding-top: 0.5rem;
-}
-
 .text-center {
   text-align: center;
 }
@@ -829,6 +807,16 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .text-sm {
@@ -887,6 +875,10 @@ video {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
 }
 
 @media (min-width: 768px) {
