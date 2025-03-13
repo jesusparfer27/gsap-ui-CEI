@@ -1,6 +1,25 @@
-.height_container {
-    /* height: 60vh; */
+/* En tu archivo CSS */
+.parentListItem:nth-child(2) {
+    margin-top: 1.25rem !important; /* Usa !important para asegurar que tu estilo no sea sobrescrito */
 }
+
+.subMenu {
+    position: absolute;
+    left: 0;
+    top: 100%; /* Asegura que el submenú aparezca justo debajo del parent */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.parentListItem:hover .subMenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+  
 
 /* Para tabletas */
 @media (max-width: 768px) {
