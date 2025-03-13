@@ -146,7 +146,10 @@ export const Header = () => {
                         master
                     </div>
                     <div style={{ zIndex: 10000 }}>
-                        <AnimatedHamburgerButton onClick={() => setIsVisible((prev) => !prev)} shouldChangeColor={shouldChangeColor} />
+                        <AnimatedHamburgerButton
+                        onClick={() => setIsVisible((prev) => !prev)}
+                        shouldChangeColor={shouldChangeColor}
+                        />
                     </div>
                 </div>
             </div>
