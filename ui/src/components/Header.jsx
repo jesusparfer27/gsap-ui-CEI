@@ -23,6 +23,7 @@ export const Header = () => {
     useEffect(() => {
         if (!overlayRef.current || !textRef.current || !listRef.current) return;
         gsap.killTweensOf(overlayRef.current);
+        gsap.killTweensOf(listRef.current);
 
         const newX = isVisible ? "0%" : "100%";
 
@@ -32,18 +33,34 @@ export const Header = () => {
             ease: "power4.out",
             onComplete: () => {
                 if (isVisible) {
-                    gsap.to(listRef.current, {
-                        opacity: 1,
-                        y: 0,
+                    // Animación de entrada: Primero listRef aparece y luego overlayRef
+                    gsap.to(overlayRef.current, {
+                        x: "0%",
                         duration: 1.5,
                         ease: "power4.out",
+                        onComplete: () => {
+                            gsap.to(listRef.current, {
+                                opacity: 1,
+                                y: 0,
+                                duration: 1.5,
+                                ease: "power4.out",
+                            });
+                        },
                     });
                 } else {
+                    // Animación de salida: Primero listRef desaparece, luego overlayRef
                     gsap.to(listRef.current, {
                         opacity: 0,
-                        y: 350, // Cambiado de -350 a 350
+                        y: 350,
                         duration: 1.5,
                         ease: "power4.in",
+                        onComplete: () => {
+                            gsap.to(overlayRef.current, {
+                                x: "100%",
+                                duration: 1.5,
+                                ease: "power4.in",
+                            });
+                        },
                     });
                 }
             },
@@ -92,20 +109,12 @@ export const Header = () => {
                     </nav>
 
                     {/* Segunda lista (3 columnas x 2 filas) */}
-                    {/* Segunda lista (3 columnas x 2 filas) */}
-                    {/* <div className="grid grid-cols-3 gap-6 text-gray-400 text-l w-[20%] mt-24">
-                        {Array.from({ length: 6 }, (_, i) => (
-                            <a key={i} href={`#item${i + 1}`} className="hover:text-gray-500 transition-colors">
-                                Item {i + 1}
-                            </a>
-                        ))}
-                    </div> */}
                     <div className="grid grid-cols-3 gap-6 text-gray-400 text-l w-[20%] mt-24">
                         {["About", "Contact", "Dealers", "News", "Care", "Press"].map((i) => (
                             <a key={i} href={`#${i.toLowerCase()}`} className="hover:text-gray-500 transition-colors">
                                 {i}
                             </a>
-                            ))}
+                        ))}
                     </div>
 
                 </div>
