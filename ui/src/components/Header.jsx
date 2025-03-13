@@ -19,78 +19,97 @@ export const Header = () => {
             gsap.set(listRef.current, { opacity: 0, y: 350 }); // Cambiado de -350 a 350
         }
     }, []);
+    
 
     useEffect(() => {
         if (!overlayRef.current || !textRef.current || !listRef.current) return;
         gsap.killTweensOf(overlayRef.current);
         gsap.killTweensOf(listRef.current);
-
+    
         const newX = isVisible ? "0%" : "100%";
-
-        gsap.to(overlayRef.current, {
-            x: newX,
-            duration: 1.5,
-            ease: "power4.out",
-            onComplete: () => {
-                if (isVisible) {
-                    // Animación de entrada: Primero listRef aparece y luego overlayRef
-                    gsap.to(overlayRef.current, {
-                        x: "0%",
+    
+        if (isVisible) {
+            // Animación de entrada: Primero overlayRef aparece, luego listRef
+            gsap.to(overlayRef.current, {
+                x: "0%",
+                duration: 1.5,
+                ease: "power4.out",
+                onComplete: () => {
+                    gsap.to(listRef.current, {
+                        opacity: 1,
+                        y: 0,
                         duration: 1.5,
                         ease: "power4.out",
-                        onComplete: () => {
-                            gsap.to(listRef.current, {
-                                opacity: 1,
-                                y: 0,
-                                duration: 1.5,
-                                ease: "power4.out",
-                            });
-                        },
                     });
-                } else {
-                    // Animación de salida: Primero listRef desaparece, luego overlayRef
-                    gsap.to(listRef.current, {
-                        opacity: 0,
-                        y: 350,
+                },
+            });
+        } else {
+            // Animación de salida: Primero listRef desaparece, luego overlayRef
+            gsap.to(listRef.current, {
+                opacity: 0,
+                y: 350,
+                duration: 1.5,
+                ease: "power4.in",
+                onComplete: () => {
+                    gsap.to(overlayRef.current, {
+                        x: "100%",
                         duration: 1.5,
                         ease: "power4.in",
-                        onComplete: () => {
-                            gsap.to(overlayRef.current, {
-                                x: "100%",
-                                duration: 1.5,
-                                ease: "power4.in",
-                            });
-                        },
                     });
-                }
-            },
-            onUpdate: function () {
-                const overlayRect = overlayRef.current.getBoundingClientRect();
-                const textRect = textRef.current.getBoundingClientRect();
-                const overlayLeft = overlayRect.left;
-                const overlayRight = overlayRect.right;
-                const textLeft = textRect.left;
-                const textRight = textRect.right;
+                },
+            });
+        }
+    
+        // Actualización de los colores y el estado del slider
+        const overlayRect = overlayRef.current.getBoundingClientRect();
+        const textRect = textRef.current.getBoundingClientRect();
+        const overlayLeft = overlayRect.left;
+        const textRight = textRect.right;
+    
+        // Cambiar el color cuando el borde izquierdo del overlay toque o cruce el borde derecho del texto
+        const shouldChangeColor = overlayLeft >= textRight;
+    
+        // Cambiar el color del texto solo cuando el borde izquierdo de overlayRef toque o cruce el borde derecho de textRef
+        gsap.to(textRef.current, {
+            color: shouldChangeColor ? "black" : "white",
+            duration: 1,
+            ease: "power1.out",
+        });
+    
+        setSliderBehind(overlayLeft <= 0);
+    }, [isVisible]);
 
-                const shouldChangeToWhite = overlayLeft < textRight;
-                const shouldChangeToBlack = overlayRight > textLeft;
+    useEffect(() => {
+        if (!overlayRef.current || !textRef.current) return;
 
-                const progress = Math.abs((overlayLeft / window.innerWidth) * 100);
+        const checkOverlayPosition = () => {
+            const overlayRect = overlayRef.current.getBoundingClientRect();
+            const textRect = textRef.current.getBoundingClientRect();
 
-                if (progress >= 90) {
-                    setShouldChangeColor(isVisible);
-                }
+            // Solo cambia el color si overlay toca el borde izquierdo de textRef
+            const isOverlayTouchingText = overlayRect.left <= textRect.left;
 
+            if (isOverlayTouchingText !== shouldChangeColor) {
+                setShouldChangeColor(isOverlayTouchingText);
                 gsap.to(textRef.current, {
-                    color: shouldChangeToWhite ? "white" : "black",
+                    color: isOverlayTouchingText ? "white" : "black",
                     duration: 1,
                     ease: "power1.out",
                 });
+            }
 
-                setSliderBehind(overlayLeft <= 0);
-            },
-        });
-    }, [isVisible]);
+            requestAnimationFrame(checkOverlayPosition);
+        };
+
+        requestAnimationFrame(checkOverlayPosition);
+
+        return () => {
+            cancelAnimationFrame(checkOverlayPosition);
+        };
+    }, [shouldChangeColor]);
+
+    
+
 
     return (
         <>
