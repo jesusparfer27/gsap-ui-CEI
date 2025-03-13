@@ -16,7 +16,7 @@ const VARIANTS = {
   },
 };
 
-export const AnimatedHamburgerButton = forwardRef(({ onClick, shouldChangeColor }, ref) => {
+export const AnimatedHamburgerButton = forwardRef(({ onClick, shouldChangeColorMenu, shouldChangeColor }, ref) => {
   const [active, setActive] = useState(false);
 
   const handleClick = () => {
@@ -39,17 +39,17 @@ export const AnimatedHamburgerButton = forwardRef(({ onClick, shouldChangeColor 
       >
         <motion.span
           variants={VARIANTS.top}
-          className={`absolute h-0.5 w-8 ${shouldChangeColor ? "bg-white" : "bg-black"}`}
+          className={`absolute h-0.5 w-8 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
           style={{ y: "-50%", left: "50%", x: "-50%", top: "30%" }}
         />
         <motion.span
           variants={VARIANTS.middle}
-          className={`absolute h-0.5 w-8 ${shouldChangeColor ? "bg-white" : "bg-black"}`}
+          className={`absolute h-0.5 w-8 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
           style={{ left: "50%", x: "-50%", top: "50%" }}
         />
         <motion.span
           variants={VARIANTS.bottom}
-          className={`absolute h-0.5 w-4 ${shouldChangeColor ? "bg-white" : "bg-black"}`}
+          className={`absolute h-0.5 w-4 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
           style={{
             x: "-50%",
             y: "50%",

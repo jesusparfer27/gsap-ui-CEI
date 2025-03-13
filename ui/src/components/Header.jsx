@@ -6,10 +6,11 @@ import gsap from "gsap";
 export const Header = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [shouldChangeColor, setShouldChangeColor] = useState(false);
+    const [shouldChangeColorMenu, setShouldChangeColorMenu] = useState(false);
     const overlayRef = useRef(null);
     const textRef = useRef(null);
     const listRef = useRef(null);
-    const burgerRef = useRef(null); // Nueva referencia para el botó
+    const burguerRef = useRef(null); // Nueva referencia para el botó
     const { sliderBehind, setSliderBehind } = useSliderContext();
 
     useEffect(() => {
@@ -81,19 +82,31 @@ export const Header = () => {
     }, [isVisible]);
 
     useEffect(() => {
-        if (!overlayRef.current || !textRef.current) return;
+        if (!overlayRef.current || !textRef.current || !burguerRef.current) return;
 
         const checkOverlayPosition = () => {
             const overlayRect = overlayRef.current.getBoundingClientRect();
             const textRect = textRef.current.getBoundingClientRect();
+            const burgerRect = burguerRef.current.getBoundingClientRect()
 
             // Solo cambia el color si overlay toca el borde izquierdo de textRef
             const isOverlayTouchingText = overlayRect.left <= textRect.left;
+            const isOverlayTouchingMenu = overlayRect.left <= burgerRect.left;
+
 
             if (isOverlayTouchingText !== shouldChangeColor) {
                 setShouldChangeColor(isOverlayTouchingText);
                 gsap.to(textRef.current, {
                     color: isOverlayTouchingText ? "white" : "black",
+                    duration: 1,
+                    ease: "power1.out",
+                });
+            }
+
+            if (isOverlayTouchingMenu !== shouldChangeColorMenu) {
+                setShouldChangeColorMenu(isOverlayTouchingMenu);
+                gsap.to(burguerRef.current, {
+                    color: isOverlayTouchingMenu ? "white" : "black",
                     duration: 1,
                     ease: "power1.out",
                 });
@@ -107,19 +120,26 @@ export const Header = () => {
         return () => {
             cancelAnimationFrame(checkOverlayPosition);
         };
-    }, [shouldChangeColor]);
+    }, [shouldChangeColor, shouldChangeColorMenu]);
 
     useEffect(() => {
-        if (!overlayRef.current || !burgerRef.current) return;
+        if (!overlayRef.current || !burguerRef.current) return;
 
         const checkOverlayPosition = () => {
             const overlayRect = overlayRef.current.getBoundingClientRect();
-            const burgerRect = burgerRef.current.getBoundingClientRect();
+            const burgerRect = burguerRef.current.getBoundingClientRect();
+            const textRect = textRef.current.getBoundingClientRect();
+
 
             // Si el overlay ha pasado la posición del menú hamburguesa
-            const isOverlayTouchingBurger = overlayRect.left <= burgerRect.left;
+            const isOverlayTouchingMenu = overlayRect.left <= burgerRect.left;
+            const isOverlayTouchingText = overlayRect.left <= textRect.left;
+
 
             setShouldChangeColor(isOverlayTouchingText);
+
+            setShouldChangeColor(isOverlayTouchingMenu);
+
 
             requestAnimationFrame(checkOverlayPosition);
         };
@@ -168,9 +188,10 @@ export const Header = () => {
                     </div>
                     <div style={{ zIndex: 10000 }}>
                         <AnimatedHamburgerButton
-                            ref={burgerRef}
+                            ref={burguerRef}
                             onClick={() => setIsVisible(!isVisible)}
                             shouldChangeColor={shouldChangeColor}
+                            shouldChangeColorMenu={shouldChangeColorMenu}
                         />
                     </div>
                 </div>
