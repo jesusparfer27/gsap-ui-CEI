@@ -4,9 +4,10 @@ import { useSliderContext } from "../context/SliderContext";
 import gsap from "gsap";
 import '../styles/styles.css'
 
+
 export const Header = () => {
     const [isVisible, setIsVisible] = useState(false);
-    const [furnitures, setFurnitures] = useState([])
+    const [furnituresSlider, setFurnituresSlider] = useState([])
     const [currentIndex, setCurrentIndex] = useState(0); // Controlador del índice para la imagen
     const [shouldChangeColor, setShouldChangeColor] = useState(false);
     const [shouldChangeColorMenu, setShouldChangeColorMenu] = useState(false);
@@ -17,6 +18,7 @@ export const Header = () => {
     const listRef = useRef(null);
     const burguerRef = useRef(null); // Nueva referencia para el botón
     const imageRef = useRef(null)
+  const [error, setError] = useState(null);
     const { sliderBehind, setSliderBehind } = useSliderContext();
 
     const VITE_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
@@ -162,69 +164,102 @@ export const Header = () => {
 
     useEffect(() => {
         if (isSubMenuVisible) {
+            // Establecer la posición inicial de cada elemento del submenú
+            gsap.set(".subMenu li:first-child", { y: 40, opacity: 0, duration: 1 });
+            gsap.set(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1});
+            gsap.set(".subMenu li:nth-child(3)", { y: -40, opacity: 0, duration: 1});
+    
+            // Animaciones de entrada
+            gsap.to(".subMenu li", {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: "power4.out",
+                stagger: 0.1, // Retraso entre cada animación
+            });
+    
             gsap.to(".subMenu", {
                 opacity: 1,
                 y: 0,
                 duration: 1.2,
                 ease: "power4.out",
             });
+    
             gsap.to(".parentListItem:first-child", {
                 marginBottom: "0px",
                 duration: 1.2,
                 ease: "power4.out",
             });
+    
             gsap.to(".parentListItem:nth-child(n+2):nth-child(-n+4)", {
                 y: 130,
                 duration: 1.8,
                 ease: "power4.out",
             });
+    
             gsap.to(".subMenu li:last-child", {
                 marginBottom: "80px",
                 duration: 1.2,
                 ease: "power4.out",
             });
-            gsap.to(".subMenu li", {
-                marginTop: "10px",
-                duration: 1.5,
-                ease: "power4.out",
-            });
+
+            console.log("SubMenu is now hidden"); // Aquí agregamos el console.log cuando isSubMenuVisible es false
+    
         } else {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    setIsSubMenuVisible(false); // Cambia el estado cuando termine la animación
+                    console.log("SubMenu is now hidden"); // Aquí agregamos el console.log cuando isSubMenuVisible es false
+                },
+            });
+    
+            // Animaciones de salida
             gsap.to(".subMenu", {
                 opacity: 0,
                 y: 0,
                 duration: 1.2,
                 ease: "power4.in",
             });
+    
+            gsap.to(".subMenu li:first-child", { y: -40, opacity: 0, duration: 1 });
+            gsap.to(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1 });
+            gsap.to(".subMenu li:nth-child(3)", { y: 40, opacity: 0, duration: 1 });
+    
             gsap.to(".parentListItem:first-child", {
                 marginBottom: "0px",
                 duration: 1.2,
                 ease: "power4.in",
             });
+    
             gsap.to(".parentListItem:nth-child(n+2):nth-child(-n+4)", {
-                y: 0,  // Regresar a su posición inicial
+                y: 0,
                 duration: 1.6,
                 ease: "power4.in",
             });
+    
             gsap.to(".subMenu li:last-child", {
-                marginBottom: "0px", // Restaurar margen inferior
+                marginBottom: "0px",
                 duration: 1.2,
                 ease: "power4.in",
             });
+    
             gsap.to(".subMenu li", {
-                marginTop: "0px",
+                y: 0,
+                opacity: 0,
                 duration: 1.5,
                 ease: "power4.in",
             });
         }
     }, [isSubMenuVisible]);
+    
 
     useEffect(() => {
         const fetchFurnitures = async () => {
             try {
-                const response = await fetch(`${VITE_API_BACKEND}/furniture`);
+                const response = await fetch(`${VITE_API_BACKEND}/furniture/slider`);
                 if (!response.ok) throw new Error("Error al obtener los datos");
                 const data = await response.json();
-                setFurnitures(data);
+                setFurnituresSlider(data);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -234,32 +269,37 @@ export const Header = () => {
         fetchFurnitures();
     }, []);
     
+
     useEffect(() => {
-        if (imageRef.current && showImage) {
-            // Aseguramos que la animación inicie con la opacidad en 0 y la posición Y en 500.
-            gsap.fromTo(
-                imageRef.current,
-                {
-                    opacity: 0,
-                    y: 200,  // Inicia a 500px de distancia
-                },
-                {
-                    opacity: 1,  // Finaliza con opacidad 1
-                    y: 0,  // Termina en la posición Y 0
-                    duration: 2,
-                    ease: "power4.out",
-                }
-            );
-        } else if (imageRef.current) {
-            // Animación de salida cuando `showImage` es false
-            gsap.to(imageRef.current, {
-                opacity: 0,  // Hace que desaparezca
-                y: 500,  // Regresa a la posición Y 500
+    gsap.set(imageRef.current, { opacity: 0, y: 200, duration: 1 }); // Estado inicial claro
+}, []);
+
+useEffect(() => {
+    if (imageRef.current && showImage) {
+        gsap.fromTo(
+            imageRef.current,
+            {
+                opacity: 0,
                 duration: 2,
-                ease: "power4.in",
-            });
-        }
-    }, [showImage]);  // Se ejecuta cuando `showImage` cambia
+                y: 200,
+                immediateRender: false // Evita que GSAP fuerce el inicio antes de animar
+            },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 2,
+                ease: "power4.out"
+            }
+        );
+    } else if (imageRef.current) {
+        gsap.to(imageRef.current, {
+            opacity: 0,
+            y: 200,  // No tan lejos para que sea más fluido
+            duration: 1.5,
+            ease: "power4.in"
+        });
+    }
+}, [showImage]);
     
 
     const handleMouseEnterSubMenu = (index) => {
@@ -321,7 +361,7 @@ export const Header = () => {
                                                     >
                                                         <a
                                                             href={`#${subItem.toLowerCase().replace(" ", "-")}`}
-                                                            className="text-white hover:text-gray-400 transition-colors"
+                                                            className="text-gray-400 hover:text-white transition-colors"
                                                         >
                                                             {subItem}
                                                         </a>
@@ -348,13 +388,12 @@ export const Header = () => {
             </div>
 
             {/* Mostrar imagen cuando el mouse está sobre el primer submenú */}
-            {showImage && furnitures[currentIndex] && (
-                <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 flex justify-end">
+            {showImage && furnituresSlider[currentIndex] && (
+                <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center flex justify-end">
                     <img
                         ref={imageRef}
-                        src={`${VITE_IMAGE_URL}${furnitures[currentIndex].imagen}`}
+                        src={`${VITE_IMAGE_URL}${furnituresSlider[currentIndex].imagen}`}
                         alt="SubMenu Image"
-                        className="opacity-100 transition-opacity duration-300"
                         style={{ width: '500px', height: '500px', objectFit: 'cover', top: 0, zIndex: 9999, display: 'flex', justifyContent: 'flex-end flex'}} // Define el tamaño de la imagen
                     />
                 </div>
