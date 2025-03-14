@@ -16,6 +16,7 @@ export const Header = () => {
     const overlayRef = useRef(null);
     const textRef = useRef(null);
     const listRef = useRef(null);
+  const [loading, setLoading] = useState(true);
     const burguerRef = useRef(null); // Nueva referencia para el botón
     const imageRef = useRef(null)
   const [error, setError] = useState(null);
@@ -164,31 +165,17 @@ export const Header = () => {
 
     useEffect(() => {
         if (isSubMenuVisible) {
-            // Establecer la posición inicial de cada elemento del submenú
+
             gsap.set(".subMenu li:first-child", { y: 40, opacity: 0, duration: 1 });
             gsap.set(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1});
             gsap.set(".subMenu li:nth-child(3)", { y: -40, opacity: 0, duration: 1});
     
-            // Animaciones de entrada
             gsap.to(".subMenu li", {
                 opacity: 1,
                 y: 0,
                 duration: 1.2,
                 ease: "power4.out",
-                stagger: 0.1, // Retraso entre cada animación
-            });
-    
-            gsap.to(".subMenu", {
-                opacity: 1,
-                y: 0,
-                duration: 1.2,
-                ease: "power4.out",
-            });
-    
-            gsap.to(".parentListItem:first-child", {
-                marginBottom: "0px",
-                duration: 1.2,
-                ease: "power4.out",
+                stagger: 0.1,
             });
     
             gsap.to(".parentListItem:nth-child(n+2):nth-child(-n+4)", {
@@ -202,55 +189,21 @@ export const Header = () => {
                 duration: 1.2,
                 ease: "power4.out",
             });
-
-            console.log("SubMenu is now hidden"); // Aquí agregamos el console.log cuando isSubMenuVisible es false
     
         } else {
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    setIsSubMenuVisible(false); // Cambia el estado cuando termine la animación
-                    console.log("SubMenu is now hidden"); // Aquí agregamos el console.log cuando isSubMenuVisible es false
-                },
-            });
-    
-            // Animaciones de salida
-            gsap.to(".subMenu", {
-                opacity: 0,
-                y: 0,
-                duration: 1.2,
-                ease: "power4.in",
-            });
-    
             gsap.to(".subMenu li:first-child", { y: -40, opacity: 0, duration: 1 });
             gsap.to(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1 });
             gsap.to(".subMenu li:nth-child(3)", { y: 40, opacity: 0, duration: 1 });
-    
-            gsap.to(".parentListItem:first-child", {
-                marginBottom: "0px",
-                duration: 1.2,
-                ease: "power4.in",
-            });
     
             gsap.to(".parentListItem:nth-child(n+2):nth-child(-n+4)", {
                 y: 0,
                 duration: 1.6,
                 ease: "power4.in",
             });
-    
-            gsap.to(".subMenu li:last-child", {
-                marginBottom: "0px",
-                duration: 1.2,
-                ease: "power4.in",
-            });
-    
-            gsap.to(".subMenu li", {
-                y: 0,
-                opacity: 0,
-                duration: 1.5,
-                ease: "power4.in",
-            });
+
         }
     }, [isSubMenuVisible]);
+    
     
 
     useEffect(() => {
