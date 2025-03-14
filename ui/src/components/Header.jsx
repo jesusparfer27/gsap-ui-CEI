@@ -6,14 +6,23 @@ import '../styles/styles.css'
 
 export const Header = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [furnitures, setFurnitures] = useState([])
+    const [currentIndex, setCurrentIndex] = useState(0); // Controlador del índice para la imagen
     const [shouldChangeColor, setShouldChangeColor] = useState(false);
     const [shouldChangeColorMenu, setShouldChangeColorMenu] = useState(false);
+    const [showImage, setShowImage] = useState(false);
     const [isSubMenuVisible, setIsSubMenuVisible] = useState(false); // Estado para manejar la visibilidad del submenú
     const overlayRef = useRef(null);
     const textRef = useRef(null);
     const listRef = useRef(null);
     const burguerRef = useRef(null); // Nueva referencia para el botón
+    const imageRef = useRef(null)
     const { sliderBehind, setSliderBehind } = useSliderContext();
+
+    const VITE_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
+    const VITE_API_BACKEND = import.meta.env.VITE_API_BACKEND;
+
+
 
     useEffect(() => {
         if (overlayRef.current) {
@@ -208,9 +217,61 @@ export const Header = () => {
             });
         }
     }, [isSubMenuVisible]);
+
+    useEffect(() => {
+        const fetchFurnitures = async () => {
+            try {
+                const response = await fetch(`${VITE_API_BACKEND}/furniture`);
+                if (!response.ok) throw new Error("Error al obtener los datos");
+                const data = await response.json();
+                setFurnitures(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchFurnitures();
+    }, []);
+    
+    useEffect(() => {
+        if (imageRef.current && showImage) {
+            // Aseguramos que la animación inicie con la opacidad en 0 y la posición Y en 500.
+            gsap.fromTo(
+                imageRef.current,
+                {
+                    opacity: 0,
+                    y: 200,  // Inicia a 500px de distancia
+                },
+                {
+                    opacity: 1,  // Finaliza con opacidad 1
+                    y: 0,  // Termina en la posición Y 0
+                    duration: 2,
+                    ease: "power4.out",
+                }
+            );
+        } else if (imageRef.current) {
+            // Animación de salida cuando `showImage` es false
+            gsap.to(imageRef.current, {
+                opacity: 0,  // Hace que desaparezca
+                y: 500,  // Regresa a la posición Y 500
+                duration: 2,
+                ease: "power4.in",
+            });
+        }
+    }, [showImage]);  // Se ejecuta cuando `showImage` cambia
     
 
+    const handleMouseEnterSubMenu = (index) => {
+        setShowImage(true);
+        setCurrentIndex(index); // Establece el índice del mueble para mostrar la imagen correcta
+        console.log('showImage:', true); // Verifica que el estado cambie
+    };
 
+    const handleMouseLeaveSubMenu = () => {
+        setShowImage(false);
+        console.log('showImage:', false); // Verifica que el estado cambie
+    };
 
 
     return (
@@ -223,42 +284,53 @@ export const Header = () => {
                         <ul className="flex mt-32 flex-col space-y-6 text-white text-3xl">
                             {["Collection", "Design", "Craftmanship", "Ethics"].map((item, index) => (
                                 <li key={item} className="relative parentListItem">
-                                <a
-                                    href={`#${item.toLowerCase()}`}
-                                    className="hover:text-gray-400 transition-colors"
-                                    onMouseEnter={() => index === 0 && setIsSubMenuVisible(true)}
-                                    onMouseLeave={() => index === 0 && setIsSubMenuVisible(false)}
-                                >
-                                    {item}
-                                </a>
-                            
-                                {index === 0 && isSubMenuVisible && (
-                                    <>
-                                        {/* Zona segura para evitar que el menú desaparezca */}
-                                        <div
-                                            className="absolute left-0 w-full h-10 bg-transparent"
-                                            onMouseEnter={() => setIsSubMenuVisible(true)}
-                                        ></div>
-                            
-                                        <ul
-                                            className="absolute top-full left-0 p-4 space-y-4 mt-2 subMenu"
-                                            onMouseEnter={() => setIsSubMenuVisible(true)}
-                                            onMouseLeave={() => setIsSubMenuVisible(false)}
-                                        >
-                                            {["Link 1", "Link 2", "Link 3"].map(subItem => (
-                                                <li key={subItem} className="text-sm">
-                                                    <a
-                                                        href={`#${subItem.toLowerCase().replace(" ", "-")}`}
-                                                        className="text-white hover:text-gray-400 transition-colors"
+                                    <a
+                                        href={`#${item.toLowerCase()}`}
+                                        className="hover:text-gray-400 transition-colors"
+                                        onMouseEnter={() => index === 0 && setIsSubMenuVisible(true)}
+                                        onMouseLeave={() => index === 0 && setIsSubMenuVisible(false)}
+                                    >
+                                        {item}
+                                    </a>
+
+                                    {index === 0 && isSubMenuVisible && (
+                                        <>
+                                            {/* Zona segura para evitar que el menú desaparezca */}
+                                            <div
+                                                className="absolute left-0 w-full h-10 bg-transparent"
+                                                onMouseEnter={() => {
+                                                    setIsSubMenuVisible(true);  // Función para mostrar el submenú
+                                                    handleMouseEnterSubMenu();  // Función adicional que quieres ejecutar
+                                                }}
+                                                onMouseLeave={() => {
+                                                    handleMouseLeaveSubMenu();  // Función adicional que quieres ejecutar
+                                                }}
+                                            ></div>
+
+                                            <ul
+                                                className="absolute top-full left-0 p-4 space-y-4 mt-2 subMenu"
+                                                onMouseEnter={() => setIsSubMenuVisible(true)}
+                                                onMouseLeave={() => setIsSubMenuVisible(false)}
+                                            >
+                                                {["Link 1", "Link 2", "Link 3"].map((subItem, index) => (
+                                                    <li
+                                                        key={subItem}
+                                                        className="text-sm"
+                                                        onMouseEnter={() => handleMouseEnterSubMenu(index)} // Aquí llamas a handleMouseEnterSubMenu pasando el índice
+                                                        onMouseLeave={handleMouseLeaveSubMenu} // Cuando el mouse sale, se ejecuta handleMouseLeaveSubMenu
                                                     >
-                                                        {subItem}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </>
-                                )}
-                            </li>
+                                                        <a
+                                                            href={`#${subItem.toLowerCase().replace(" ", "-")}`}
+                                                            className="text-white hover:text-gray-400 transition-colors"
+                                                        >
+                                                            {subItem}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    )}
+                                </li>
                             ))}
                         </ul>
                     </nav>
@@ -274,6 +346,19 @@ export const Header = () => {
 
                 </div>
             </div>
+
+            {/* Mostrar imagen cuando el mouse está sobre el primer submenú */}
+            {showImage && furnitures[currentIndex] && (
+                <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-300 flex justify-end">
+                    <img
+                        ref={imageRef}
+                        src={`${VITE_IMAGE_URL}${furnitures[currentIndex].imagen}`}
+                        alt="SubMenu Image"
+                        className="opacity-100 transition-opacity duration-300"
+                        style={{ width: '500px', height: '500px', objectFit: 'cover', top: 0, zIndex: 9999, display: 'flex', justifyContent: 'flex-end flex'}} // Define el tamaño de la imagen
+                    />
+                </div>
+            )}
 
             {/* Header con botón hamburguesa */}
             <div className="flex justify-center fixed top-0 left-0 w-full transition-colors duration-300" style={{ zIndex: 9999 }}>
