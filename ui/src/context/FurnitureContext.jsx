@@ -72,63 +72,63 @@ export const FurnitureProvider = ({ children }) => {
     );
   
     // Asegurar que la animación no se repite dos veces al regresar a 0
-    if (newIndex === 0 && prevIndexRef.current === furnitures.length - 1) {
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, 1000);
-    }
+    // if (newIndex === 0 && prevIndexRef.current === furnitures.length - 1) {
+    //   setTimeout(() => {
+    //     setIsAnimating(false);
+    //   }, 1000);
+    // }
   };
   
 
-  useEffect(() => {
-    if (!furnitures.length || isAnimating || prevIndexRef.current === currentIndex) return;
+  // useEffect(() => {
+  //   if (!furnitures.length || isAnimating || prevIndexRef.current === currentIndex) return;
   
-    setIsAnimating(true);
+  //   setIsAnimating(true);
   
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setIsAnimating(false);
-        prevIndexRef.current = currentIndex; // Asegurarnos de que el índice anterior se actualiza correctamente
-      },
-    });
+  //   const tl = gsap.timeline({
+  //     onComplete: () => {
+  //       setIsAnimating(false);
+  //       prevIndexRef.current = currentIndex;
+  //     },
+  //   });
   
-    const wasReversed = prevIndexRef.current > currentIndex;
-    const yOffsetText = wasReversed ? -50 : 50;
-    const yOffsetImage = wasReversed ? -300 : 300;
+  //   const wasReversed = prevIndexRef.current > currentIndex;
+  //   const yOffsetText = wasReversed ? -50 : 50;
+  //   const yOffsetImage = wasReversed ? -300 : 300;
   
-    gsap.set(
-      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
-      {
-        y: yOffsetText,
-        opacity: 0,
-      }
-    );
+  //   gsap.set(
+  //     [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+  //     {
+  //       y: yOffsetText,
+  //       opacity: 0,
+  //     }
+  //   );
   
-    gsap.set(imageRef.current, {
-      y: yOffsetImage,
-      opacity: 0,
-    });
+  //   gsap.set(imageRef.current, {
+  //     y: yOffsetImage,
+  //     opacity: 0,
+  //   });
   
-    tl.to(
-      [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.7,
-        ease: "power2.out",
-      }
-    ).to(
-      imageRef.current,
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-      },
-      "-=0.5"
-    );
+  //   tl.to(
+  //     [textNameRef.current, textDesignerRef.current, textDescriptionRef.current],
+  //     {
+  //       y: 0,
+  //       opacity: 1,
+  //       duration: 0.7,
+  //       ease: "power2.out",
+  //     }
+  //   ).to(
+  //     imageRef.current,
+  //     {
+  //       y: 0,
+  //       opacity: 1,
+  //       duration: 1,
+  //       ease: "power2.out",
+  //     },
+  //     "-=0.5"
+  //   );
   
-  }, [currentIndex]);
+  // }, [currentIndex]);
   
   
 

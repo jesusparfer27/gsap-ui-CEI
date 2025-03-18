@@ -3,6 +3,12 @@
     margin-top: 1.25rem !important; /* Usa !important para asegurar que tu estilo no sea sobrescrito */
 }
 
+.safe-zone {
+    background-color: red; /* Color oscuro semi-transparente */
+    padding: 20px;
+    border-radius: 10px;
+}
+
 .subMenu {
     position: absolute;
     left: 0;

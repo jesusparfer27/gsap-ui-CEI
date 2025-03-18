@@ -227,45 +227,99 @@ export const Header = () => {
     gsap.set(imageRef.current, { opacity: 0, y: 200, duration: 1 }); // Estado inicial claro
 }, []);
 
-useEffect(() => {
-    if (imageRef.current && showImage) {
-        gsap.fromTo(
-            imageRef.current,
-            {
+const handleMouseEnterSubMenu = (index) => {
+    if (index === 0) { // Solo permite la animación en el primer hijo
+        setShowImage(true);
+        setCurrentIndex(index);
+    }
+};
+
+
+    const handleMouseLeaveSubMenu = () => {
+        if (imageRef.current) {
+            gsap.to(imageRef.current, {
                 opacity: 0,
-                duration: 2,
                 y: 200,
-                immediateRender: false // Evita que GSAP fuerce el inicio antes de animar
-            },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 2,
-                ease: "power4.out"
-            }
-        );
-    } else if (imageRef.current) {
-        gsap.to(imageRef.current, {
+                duration: 1,
+                ease: "power4.in",
+                onComplete: () => {
+                    setShowImage(false);
+                }
+            });
+        }
+    };
+
+    const handleMouseLeaveSafeZone = () => {
+        console.log("Saliste del área segura!");
+
+            gsap.to(".subMenu li:first-child", {
+            y: 40,
             opacity: 0,
-            y: 200,  // No tan lejos para que sea más fluido
+            duration: 1,
+            ease: "power4.in",
+            stagger: 0.1, // Hace que la animación sea escalonada
+            onComplete: () => {
+                setIsSubMenuVisible(false); // Oculta el menú después de la animación
+            },
+            });
+            gsap.to(".subMenu li:nth-child(2)", {
+            y: 0,
+            opacity: 0,
+            duration: 1 ,
+            ease: "power4.in",
+            stagger: 0.1, // Hace que la animación sea escalonada
+            onComplete: () => {
+                setIsSubMenuVisible(false); // Oculta el menú después de la animación
+            },
+            });
+            gsap.to(".subMenu li:nth-child(3)", {
+            y: -40,
+            opacity: 0,
+            duration: 1, 
+            ease: "power4.in",
+            stagger: 0.1, // Hace que la animación sea escalonada
+            onComplete: () => {
+                setIsSubMenuVisible(false); // Oculta el menú después de la animación
+            },
+            });
+    };
+
+    useEffect(() => {
+        if (imageRef.current && showImage) {
+            gsap.fromTo(
+                imageRef.current,
+                {
+                    opacity: 0,
+                    duration: 2,
+                    y: 200,
+                    immediateRender: false
+                },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 2,
+                    ease: "power4.out"
+                }
+            );
+        } else if (imageRef.current) {
+            gsap.to(imageRef.current, {
+                opacity: 0,
+                y: 200, 
+                duration: 1.5,
+                ease: "power4.in"
+            });
+        }
+    }, [showImage]);
+
+    const handleMousePhotoSafeZone = () => {
+         gsap.to(imageRef, {
+            opacity: 0,
+            y: 200,
             duration: 1.5,
             ease: "power4.in"
         });
-    }
-}, [showImage]);
+    };
     
-
-    const handleMouseEnterSubMenu = (index) => {
-        setShowImage(true);
-        setCurrentIndex(index); // Establece el índice del mueble para mostrar la imagen correcta
-        console.log('showImage:', true); // Verifica que el estado cambie
-    };
-
-    const handleMouseLeaveSubMenu = () => {
-        setShowImage(false);
-        console.log('showImage:', false); // Verifica que el estado cambie
-    };
-
 
     return (
         <>
@@ -288,29 +342,35 @@ useEffect(() => {
 
                                     {index === 0 && isSubMenuVisible && (
                                         <>
-                                            {/* Zona segura para evitar que el menú desaparezca */}
+                                          <div className="menu-container">
                                             <div
-                                                className="absolute left-0 w-full h-10 bg-transparent"
+                                                className="absolute w-full h-72 left-[-80px] "
                                                 onMouseEnter={() => {
-                                                    setIsSubMenuVisible(true);  // Función para mostrar el submenú
-                                                    handleMouseEnterSubMenu();  // Función adicional que quieres ejecutar
+                                                    setIsSubMenuVisible(true); 
+                                                    handleMouseEnterSubMenu();  
                                                 }}
+
                                                 onMouseLeave={() => {
-                                                    handleMouseLeaveSubMenu();  // Función adicional que quieres ejecutar
+                                                    handleMouseLeaveSubMenu(); 
                                                 }}
                                             ></div>
 
                                             <ul
-                                                className="absolute top-full left-0 p-4 space-y-4 mt-2 subMenu"
+                                                className="absolute top-full left-0 p-4 space-y-4 mt-2 subMenu h-40 w-60 "
                                                 onMouseEnter={() => setIsSubMenuVisible(true)}
-                                                onMouseLeave={() => setIsSubMenuVisible(false)}
+                                                // onMouseLeave={() => setIsSubMenuVisible(false)}
+                                                onMouseLeave={handleMouseLeaveSafeZone} 
+                                                onMouseMove={handleMousePhotoSafeZone} 
                                             >
                                                 {["Link 1", "Link 2", "Link 3"].map((subItem, index) => (
                                                     <li
                                                         key={subItem}
                                                         className="text-sm"
-                                                        onMouseEnter={() => handleMouseEnterSubMenu(index)} // Aquí llamas a handleMouseEnterSubMenu pasando el índice
-                                                        onMouseLeave={handleMouseLeaveSubMenu} // Cuando el mouse sale, se ejecuta handleMouseLeaveSubMenu
+                                                        onMouseEnter={() => {
+                                                            handleMouseEnterSubMenu(index)
+                                                            handleMousePhotoSafeZone()
+                                                        } } // Aquí llamas a handleMouseEnterSubMenu pasando el índice
+                                                        onMouseLeave={handleMouseLeaveSubMenu} 
                                                     >
                                                         <a
                                                             href={`#${subItem.toLowerCase().replace(" ", "-")}`}
@@ -321,6 +381,7 @@ useEffect(() => {
                                                     </li>
                                                 ))}
                                             </ul>
+                                            </div>
                                         </>
                                     )}
                                 </li>
@@ -354,7 +415,7 @@ useEffect(() => {
 
             {/* Header con botón hamburguesa */}
             <div className="flex justify-center fixed top-0 left-0 w-full transition-colors duration-300" style={{ zIndex: 9999 }}>
-                <div className="justify-between flex items-center w-[90%] mt-4 mb-4">
+                <div className="justify-between flex items-center w-[80%] mt-4 mb-4">
                     <div ref={textRef} className="mb-3.5 font-extrabold text-6xl" style={{ zIndex: 9999 }}>
                         master
                     </div>
