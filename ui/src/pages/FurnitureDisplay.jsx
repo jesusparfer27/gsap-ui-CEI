@@ -24,15 +24,15 @@ const FurnitureDisplay = () => {
   const VITE_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
   return (
-    <div className="w-full flex justify-center items-center h-[70vh]">
+    <div className="w-full flex justify-center items-center h-[80vh]">
       {loading && <p className="text-center text-gray-500">Cargando muebles...</p>}
       {error && <p className="text-center text-red-500">Error: {error}</p>}
 
       {furnitures.length > 0 && (
-        <div className="flex flex-col justify-center h-full items-center" ref={furnitureContainerRef} key={furnitures[currentIndex]._id}>
-          <div className="flex w-full height_container gap-52">
+        <div className="flex flex-col w-screen justify-center h-screen items-center mb-4" ref={furnitureContainerRef}>
+          <div className="flex w-[80%] height_container gap-52 mb-4">
             <div className="md:w-1/2 flex flex-col  justify-center items-start">
-              <div className="w-full flex flex-col justify-center">
+              <div className="w-full flex h-full flex-col justify-start">
                 <p ref={textDesignerRef} className="text-gray-500 text-sm mt-2 mb-2">
                   <strong>{furnitures[currentIndex].diseñador}</strong>
                 </p>
@@ -60,7 +60,7 @@ const FurnitureDisplay = () => {
                 ref={imageRef}
                 src={`${VITE_IMAGE_URL}${furnitures[currentIndex].imagen}`}
                 alt={furnitures[currentIndex].nombre}
-                className="min-h-[50vh] object-cover rounded-md"
+                className="min-h-[30vh] object-cover rounded-md"
               />
             </div>
           </div>

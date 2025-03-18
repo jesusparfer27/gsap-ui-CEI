@@ -416,8 +416,8 @@ const handleMouseEnterSubMenu = (index) => {
             {/* Header con botón hamburguesa */}
             <div className="flex justify-center fixed top-0 left-0 w-full transition-colors duration-300" style={{ zIndex: 9999 }}>
                 <div className="justify-between flex items-center w-[80%] mt-4 mb-4">
-                    <div ref={textRef} className="mb-3.5 font-extrabold text-6xl" style={{ zIndex: 9999 }}>
-                        master
+                    <div ref={textRef} className="mb-3.5 font-extrabold text-3xl" style={{ zIndex: 9999 }}>
+                        mater
                     </div>
                     <div style={{ zIndex: 10000 }}>
                         <AnimatedHamburgerButton

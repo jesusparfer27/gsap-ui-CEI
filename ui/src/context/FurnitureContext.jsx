@@ -39,13 +39,27 @@ export const FurnitureProvider = ({ children }) => {
   const handleToggleFurniture = (direction = 1) => {
     if (isAnimating || furnitures.length === 0) return;
   
+    // Verificar si las referencias existen antes de continuar
+    if (
+      !textNameRef.current ||
+      !textDesignerRef.current ||
+      !textDescriptionRef.current ||
+      !imageRef.current
+    ) {
+      console.warn("Uno o más elementos de referencia no están disponibles");
+      return;
+    }
+  
     setIsAnimating(true);
   
     const newIndex = (currentIndex + direction + furnitures.length) % furnitures.length;
     const goingBackwards = direction === -1;
   
     const tl = gsap.timeline({
+      onStart: () => console.log("Animación empezó"),
+      onUpdate: () => console.log("Animación en progreso"),
       onComplete: () => {
+        console.log("Animación completada", { prevIndex: prevIndexRef.current, newIndex });
         setCurrentIndex(newIndex);
         prevIndexRef.current = newIndex;
         setIsAnimating(false);
@@ -70,14 +84,50 @@ export const FurnitureProvider = ({ children }) => {
       },
       "-=1.1"
     );
-  
-    // Asegurar que la animación no se repite dos veces al regresar a 0
-    // if (newIndex === 0 && prevIndexRef.current === furnitures.length - 1) {
-    //   setTimeout(() => {
-    //     setIsAnimating(false);
-    //   }, 1000);
-    // }
   };
+  
+
+  useEffect(() => {
+    if (!furnitures.length || isAnimating || prevIndexRef.current === currentIndex) return;
+  
+    gsap.killTweensOf([textNameRef.current, textDesignerRef.current, textDescriptionRef.current, imageRef.current]);
+  
+    setIsAnimating(true);
+  
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setIsAnimating(false);
+        prevIndexRef.current = currentIndex;
+      },
+    });
+  
+    gsap.set([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: 50,
+      opacity: 0,
+    });
+  
+    gsap.set(imageRef.current, {
+      y: 300,
+      opacity: 0,
+    });
+  
+    tl.to([textNameRef.current, textDesignerRef.current, textDescriptionRef.current], {
+      y: 0,
+      opacity: 1,
+      duration: 0.7,
+      ease: "power2.out",
+    }).to(
+      imageRef.current,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        ease: "power2.out",
+      },
+      "-=0.5"
+    );
+  }, [currentIndex]);
+  
   
 
   // useEffect(() => {

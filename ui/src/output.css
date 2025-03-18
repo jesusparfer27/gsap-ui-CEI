@@ -694,6 +694,10 @@ video {
   min-height: 50vh;
 }
 
+.min-h-\[30vh\] {
+  min-height: 30vh;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -995,8 +999,22 @@ video {
   transition-duration: 150ms;
 }
 
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hover\:text-gray-400:hover {

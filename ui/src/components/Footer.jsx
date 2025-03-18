@@ -34,7 +34,7 @@ export const Footer = () => {
 
       gsap.to(lineRef.current, {
         x: offsetX,
-        width: itemRect.width,
+        width: 250,
         duration: 0.3,
         ease: "power2.out",
       });
@@ -51,7 +51,7 @@ export const Footer = () => {
 
         gsap.to(lineRef.current, {
           x: offsetX,
-          width: itemRect.width,
+          width: 250,
           duration: 0.3,
           ease: "power2.out",
         });
@@ -103,6 +103,14 @@ export const Footer = () => {
         setCurrentIndex(index);
       });
   };
+
+  useEffect(() => {
+    if (furnitures.length) {
+      moveLineToIndex(0); // Mueve la línea al primer elemento al montar el componente
+    }
+  }, [furnitures]);
+  
+  
 
   useEffect(() => {
     if (!furnitures.length || isAnimating) return;
