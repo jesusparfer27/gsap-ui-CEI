@@ -29,7 +29,7 @@ const FurnitureDisplay = () => {
       {error && <p className="text-center text-red-500">Error: {error}</p>}
 
       {furnitures.length > 0 && (
-        <div className="flex flex-col w-screen justify-center h-screen items-center mb-4" ref={furnitureContainerRef}>
+        <div className="flex flex-col w-screen justify-center h-screen items-center mt-32 " ref={furnitureContainerRef}>
           <div className="flex w-[80%] height_container gap-52 mb-4">
             <div className="md:w-1/2 flex flex-col  justify-center items-start">
               <div className="w-full flex h-full flex-col justify-start">

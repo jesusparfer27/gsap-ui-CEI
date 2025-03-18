@@ -181,7 +181,7 @@ export const Footer = () => {
   }, [currentIndex]);
 
   return (
-    <div className="absolute bottom-0 w-full p-8" ref={containerRef}>
+    <div className="absolute bottom-0 w-full p-8 md-p-8" ref={containerRef}>
       <div className="absolute top-0 left-0 w-full h-[3px] bg-gray-200"></div>
       <div ref={lineRef} className="absolute top-0 left-0 h-[3px] bg-gray-600" style={{ width: 0 }}></div>
 
