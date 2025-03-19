@@ -16,10 +16,10 @@ export const Header = () => {
     const overlayRef = useRef(null);
     const textRef = useRef(null);
     const listRef = useRef(null);
-  const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const burguerRef = useRef(null); // Nueva referencia para el botón
     const imageRef = useRef(null)
-  const [error, setError] = useState(null);
+    const [error, setError] = useState(null);
     const { sliderBehind, setSliderBehind } = useSliderContext();
 
     const VITE_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
@@ -167,9 +167,9 @@ export const Header = () => {
         if (isSubMenuVisible) {
 
             gsap.set(".subMenu li:first-child", { y: 40, opacity: 0, duration: 1 });
-            gsap.set(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1});
-            gsap.set(".subMenu li:nth-child(3)", { y: -40, opacity: 0, duration: 1});
-    
+            gsap.set(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1 });
+            gsap.set(".subMenu li:nth-child(3)", { y: -40, opacity: 0, duration: 1 });
+
             gsap.to(".subMenu li", {
                 opacity: 1,
                 y: 0,
@@ -177,24 +177,26 @@ export const Header = () => {
                 ease: "power4.out",
                 stagger: 0.1,
             });
-    
+
+            const yValue = window.matchMedia("(max-width: 1028px)").matches ? 80 : 100; // Menos desplazamiento en md
+
             gsap.to(".parentListItem:nth-child(n+2):nth-child(-n+4)", {
-                y: 130,
+                y: yValue,
                 duration: 1.8,
                 ease: "power4.out",
             });
-    
+
             gsap.to(".subMenu li:last-child", {
                 marginBottom: "80px",
                 duration: 1.2,
                 ease: "power4.out",
             });
-    
+
         } else {
             gsap.to(".subMenu li:first-child", { y: -40, opacity: 0, duration: 1 });
             gsap.to(".subMenu li:nth-child(2)", { y: 0, opacity: 0, duration: 1 });
             gsap.to(".subMenu li:nth-child(3)", { y: 40, opacity: 0, duration: 1 });
-    
+
             gsap.to(".parentListItem:nth-child(n+2):nth-child(-n+4)", {
                 y: 0,
                 duration: 1.6,
@@ -203,8 +205,8 @@ export const Header = () => {
 
         }
     }, [isSubMenuVisible]);
-    
-    
+
+
 
     useEffect(() => {
         const fetchFurnitures = async () => {
@@ -221,18 +223,18 @@ export const Header = () => {
         };
         fetchFurnitures();
     }, []);
-    
+
 
     useEffect(() => {
-    gsap.set(imageRef.current, { opacity: 0, y: 200, duration: 1 }); // Estado inicial claro
-}, []);
+        gsap.set(imageRef.current, { opacity: 0, y: 200, duration: 1 }); // Estado inicial claro
+    }, []);
 
-const handleMouseEnterSubMenu = (index) => {
-    if (index === 0) { // Solo permite la animación en el primer hijo
-        setShowImage(true);
-        setCurrentIndex(index);
-    }
-};
+    const handleMouseEnterSubMenu = (index) => {
+        if (index === 0) { // Solo permite la animación en el primer hijo
+            setShowImage(true);
+            setCurrentIndex(index);
+        }
+    };
 
 
     const handleMouseLeaveSubMenu = () => {
@@ -252,7 +254,7 @@ const handleMouseEnterSubMenu = (index) => {
     const handleMouseLeaveSafeZone = () => {
         console.log("Saliste del área segura!");
 
-            gsap.to(".subMenu li:first-child", {
+        gsap.to(".subMenu li:first-child", {
             y: 40,
             opacity: 0,
             duration: 1,
@@ -261,27 +263,27 @@ const handleMouseEnterSubMenu = (index) => {
             onComplete: () => {
                 setIsSubMenuVisible(false); // Oculta el menú después de la animación
             },
-            });
-            gsap.to(".subMenu li:nth-child(2)", {
+        });
+        gsap.to(".subMenu li:nth-child(2)", {
             y: 0,
             opacity: 0,
-            duration: 1 ,
+            duration: 1,
             ease: "power4.in",
             stagger: 0.1, // Hace que la animación sea escalonada
             onComplete: () => {
                 setIsSubMenuVisible(false); // Oculta el menú después de la animación
             },
-            });
-            gsap.to(".subMenu li:nth-child(3)", {
+        });
+        gsap.to(".subMenu li:nth-child(3)", {
             y: -40,
             opacity: 0,
-            duration: 1, 
+            duration: 1,
             ease: "power4.in",
             stagger: 0.1, // Hace que la animación sea escalonada
             onComplete: () => {
                 setIsSubMenuVisible(false); // Oculta el menú después de la animación
             },
-            });
+        });
     };
 
     useEffect(() => {
@@ -304,7 +306,7 @@ const handleMouseEnterSubMenu = (index) => {
         } else if (imageRef.current) {
             gsap.to(imageRef.current, {
                 opacity: 0,
-                y: 200, 
+                y: 200,
                 duration: 1.5,
                 ease: "power4.in"
             });
@@ -312,28 +314,28 @@ const handleMouseEnterSubMenu = (index) => {
     }, [showImage]);
 
     const handleMousePhotoSafeZone = () => {
-         gsap.to(imageRef, {
+        gsap.to(imageRef, {
             opacity: 0,
             y: 200,
             duration: 1.5,
             ease: "power4.in"
         });
     };
-    
+
 
     return (
         <>
             {/* Overlay animado */}
             <div ref={overlayRef} className="absolute h-screen w-screen overflow-hidden bg-black z-[8888] flex justify-center items-center">
-                <div ref={listRef} className="w-[80%] flex flex-col gap-60">
+                <div ref={listRef} className="w-[80%] flex flex-col 2xl:gap-60  lg:gap-16">
                     {/* Primera lista (Columna de 6 elementos) */}
-                    <nav>
-                        <ul className="flex mt-32 flex-col space-y-6 text-white text-3xl">
+                    <nav className="">
+                        <ul className="flex mt-32 flex-col space-y-6 text-white 2xl:text-3xl lg:text-xl lg:mt-16">
                             {["Collection", "Design", "Craftmanship", "Ethics"].map((item, index) => (
                                 <li key={item} className="relative parentListItem">
                                     <a
                                         href={`#${item.toLowerCase()}`}
-                                        className="hover:text-gray-400 transition-colors"
+                                        className="hover:text-gray-400 transition-colors lg:text-xl 2xl:text-2xl"
                                         onMouseEnter={() => index === 0 && setIsSubMenuVisible(true)}
                                         onMouseLeave={() => index === 0 && setIsSubMenuVisible(false)}
                                     >
@@ -342,45 +344,45 @@ const handleMouseEnterSubMenu = (index) => {
 
                                     {index === 0 && isSubMenuVisible && (
                                         <>
-                                          <div className="menu-container">
-                                            <div
-                                                className="absolute w-full h-72 left-[-80px] "
-                                                onMouseEnter={() => {
-                                                    setIsSubMenuVisible(true); 
-                                                    handleMouseEnterSubMenu();  
-                                                }}
+                                            <div className="menu-container">
+                                                <div
+                                                    className="absolute w-full h-72 lg:h-20  left-[-80px]"
+                                                    onMouseEnter={() => {
+                                                        setIsSubMenuVisible(true);
+                                                        handleMouseEnterSubMenu();
+                                                    }}
 
-                                                onMouseLeave={() => {
-                                                    handleMouseLeaveSubMenu(); 
-                                                }}
-                                            ></div>
+                                                    onMouseLeave={() => {
+                                                        handleMouseLeaveSubMenu();
+                                                    }}
+                                                ></div>
 
-                                            <ul
-                                                className="absolute top-full left-0 p-4 space-y-4 mt-2 subMenu h-40 w-60 "
-                                                onMouseEnter={() => setIsSubMenuVisible(true)}
-                                                // onMouseLeave={() => setIsSubMenuVisible(false)}
-                                                onMouseLeave={handleMouseLeaveSafeZone} 
-                                                onMouseMove={handleMousePhotoSafeZone} 
-                                            >
-                                                {["Link 1", "Link 2", "Link 3"].map((subItem, index) => (
-                                                    <li
-                                                        key={subItem}
-                                                        className="text-sm"
-                                                        onMouseEnter={() => {
-                                                            handleMouseEnterSubMenu(index)
-                                                            handleMousePhotoSafeZone()
-                                                        } } // Aquí llamas a handleMouseEnterSubMenu pasando el índice
-                                                        onMouseLeave={handleMouseLeaveSubMenu} 
-                                                    >
-                                                        <a
-                                                            href={`#${subItem.toLowerCase().replace(" ", "-")}`}
-                                                            className="text-gray-400 hover:text-white transition-colors"
+                                                <ul
+                                                    className="absolute top-full left-0 p-4 space-y-4  mt-2 subMenu h-40 w-60 "
+                                                    onMouseEnter={() => setIsSubMenuVisible(true)}
+                                                    // onMouseLeave={() => setIsSubMenuVisible(false)}
+                                                    onMouseLeave={handleMouseLeaveSafeZone}
+                                                    onMouseMove={handleMousePhotoSafeZone}
+                                                >
+                                                    {["Link 1", "Link 2", "Link 3"].map((subItem, index) => (
+                                                        <li
+                                                            key={subItem}
+                                                            className="text-sm lg:text-xs"
+                                                            onMouseEnter={() => {
+                                                                handleMouseEnterSubMenu(index)
+                                                                handleMousePhotoSafeZone()
+                                                            }} // Aquí llamas a handleMouseEnterSubMenu pasando el índice
+                                                            onMouseLeave={handleMouseLeaveSubMenu}
                                                         >
-                                                            {subItem}
-                                                        </a>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                                            <a
+                                                                href={`#${subItem.toLowerCase().replace(" ", "-")}`}
+                                                                className="text-gray-400 hover:text-white transition-colors"
+                                                            >
+                                                                {subItem}
+                                                            </a>
+                                                        </li>
+                                                    ))}
+                                                </ul>
                                             </div>
                                         </>
                                     )}
@@ -390,7 +392,7 @@ const handleMouseEnterSubMenu = (index) => {
                     </nav>
 
                     {/* Segunda lista (3 columnas x 2 filas) */}
-                    <div className="grid grid-cols-3 gap-6 text-gray-400 text-l w-[20%] mt-24">
+                    <div className="grid grid-cols-3 gap-6 text-gray-400 text-l w-[20%] mt-24 lg:text-xs 2xl:text-base">
                         {["About", "Contact", "Dealers", "News", "Care", "Press"].map((i) => (
                             <a key={i} href={`#${i.toLowerCase()}`} className="hover:text-gray-500 transition-colors">
                                 {i}
@@ -405,10 +407,11 @@ const handleMouseEnterSubMenu = (index) => {
             {showImage && furnituresSlider[currentIndex] && (
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center flex justify-end">
                     <img
+                        className="lg:max-h-[40vh] lg:object-cover lg:max-w-[40vh] "
                         ref={imageRef}
                         src={`${VITE_IMAGE_URL}${furnituresSlider[currentIndex].imagen}`}
                         alt="SubMenu Image"
-                        style={{ width: '500px', height: '500px', objectFit: 'cover', top: 0, zIndex: 9999, display: 'flex', justifyContent: 'flex-end flex'}} // Define el tamaño de la imagen
+                        style={{ width: '500px', height: '500px', objectFit: 'cover', top: 0, zIndex: 9999, display: 'flex', justifyContent: 'flex-end flex' }} // Define el tamaño de la imagen
                     />
                 </div>
             )}
@@ -416,7 +419,7 @@ const handleMouseEnterSubMenu = (index) => {
             {/* Header con botón hamburguesa */}
             <div className="flex justify-center fixed top-0 left-0 w-full transition-colors duration-300" style={{ zIndex: 9999 }}>
                 <div className="justify-between flex items-center w-[80%] mt-4 mb-4">
-                    <div ref={textRef} className="mb-3.5 font-extrabold text-3xl" style={{ zIndex: 9999 }}>
+                    <div ref={textRef} className="mb-3.5 font-extrabold 2xl:text-4xl lg:text-2xl" style={{ zIndex: 9999 }}>
                         mater
                     </div>
                     <div style={{ zIndex: 10000 }}>

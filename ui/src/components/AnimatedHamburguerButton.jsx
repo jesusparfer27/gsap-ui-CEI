@@ -33,23 +33,23 @@ export const AnimatedHamburgerButton = forwardRef(({ onClick, shouldChangeColorM
           handleClick();
           onClick();
         }}
-        className={`relative h-12 w-12 border-2 transition-colors ${
+        className={`relative h-12 w-12 border-2 transition-colors lg:h-10 lg:w-10 ${
           active ? "bg-transparent" : "bg-transparent"
         }`}
       >
         <motion.span
           variants={VARIANTS.top}
-          className={`absolute h-0.5 w-8 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
+          className={`absolute h-0.5 lg:w-6 2xl:w-8 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
           style={{ y: "-50%", left: "50%", x: "-50%", top: "30%" }}
         />
         <motion.span
           variants={VARIANTS.middle}
-          className={`absolute h-0.5 w-8 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
+          className={`absolute h-0.5 lg:w-6 2xl:w-8 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
           style={{ left: "50%", x: "-50%", top: "50%" }}
         />
         <motion.span
           variants={VARIANTS.bottom}
-          className={`absolute h-0.5 w-4 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
+          className={`absolute h-0.5 lg:w-6 2xl:w-4 ${shouldChangeColorMenu ? "bg-white" : "bg-black"}`}
           style={{
             x: "-50%",
             y: "50%",

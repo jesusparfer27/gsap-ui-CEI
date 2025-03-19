@@ -181,12 +181,12 @@ export const Footer = () => {
   }, [currentIndex]);
 
   return (
-    <div className="absolute bottom-0 w-full p-8 md-p-8" ref={containerRef}>
+    <div className="absolute bottom-0 w-full p-8 lg:p-4 2xl:p-8" ref={containerRef}>
       <div className="absolute top-0 left-0 w-full h-[3px] bg-gray-200"></div>
       <div ref={lineRef} className="absolute top-0 left-0 h-[3px] bg-gray-600" style={{ width: 0 }}></div>
 
       <div className="flex pl-4">
-        <div className="flex justify-center gap-8 pl-4">
+        <div className="flex justify-center gap-8 pl-4 lg:gap-16 2xl:gap-4">
           {furnitures.map((item, index) => (
             <div
               key={item._id}
@@ -195,8 +195,8 @@ export const Footer = () => {
               onMouseLeave={resetLine}
               onClick={() => handleFooterClick(index)}
             >
-              <p className="text-gray-500 font-bold">{(index + 1).toString().padStart(2, "0")}</p>
-              <h3 className={`text-l transition-all font-bold ${activeIndex === index ? "text-black" : "text-gray-500"}`}>
+              <p className="text-gray-500 font-bold lg:text-xs 2xl:text-base">{(index + 1).toString().padStart(2, "0")}</p>
+              <h3 className={` lg:text-sm 2xl:text-lg transition-all font-bold ${activeIndex === index ? "text-black" : "text-gray-500"}`}>
                 {item.nombre}
               </h3>
             </div>
